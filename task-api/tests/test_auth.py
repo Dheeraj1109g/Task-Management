@@ -14,3 +14,10 @@ def test_wrong_password(client):
     client.post("/auth/register", json={"email": "x@example.com", "password": "password123"})
     r = client.post("/auth/login", data={"username": "x@example.com", "password": "wrongpass"})
     assert r.status_code == 401
+
+def test_email_is_case_insensitive(client):
+    client.post("/auth/register", json={"email": "Case@Example.com", "password": "password123"})
+    r = client.post("/auth/login", data={"username": "CASE@example.COM", "password": "password123"})
+    assert r.status_code == 200
+    r = client.post("/auth/register", json={"email": "case@example.com", "password": "password123"})
+    assert r.status_code == 409    
