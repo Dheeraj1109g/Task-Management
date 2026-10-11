@@ -60,3 +60,25 @@ def test_partial_update_keeps_other_fields(client, auth_headers):
     r = client.patch(f"/tasks/{created['id']}", json={"status": "done"}, headers=auth_headers)
     assert r.json()["title"] == "Keep me"
     assert r.json()["description"] == "original"
+
+def test_stats(client, auth_headers):
+    ids = [
+        client.post("/tasks", json={"title": f"T{i}"}, headers=auth_headers).json()["id"]
+        for i in range(3)
+    ]
+    client.patch(f"/tasks/{ids[0]}", json={"status": "done"}, headers=auth_headers)
+    client.patch(f"/tasks/{ids[1]}", json={"status": "in_progress"}, headers=auth_headers)
+
+    r = client.get("/tasks/stats", headers=auth_headers)
+    assert r.status_code == 200
+    assert r.json() == {"todo": 1, "in_progress": 1, "done": 1, "total": 3}
+
+
+def test_stats_only_count_own_tasks(client, auth_headers):
+    client.post("/tasks", json={"title": "Mine"}, headers=auth_headers)
+    client.post("/auth/register", json={"email": "b@example.com", "password": "password123"})
+    token = client.post(
+        "/auth/login", data={"username": "b@example.com", "password": "password123"}
+    ).json()["access_token"]
+    other = {"Authorization": f"Bearer {token}"}
+    assert client.get("/tasks/stats", headers=other).json()["total"] == 0    

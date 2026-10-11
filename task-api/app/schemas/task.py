@@ -21,3 +21,9 @@ class TaskRead(BaseModel):
     status: TaskStatus
     due_date: datetime | None
     created_at: datetime
+
+class TaskStats(BaseModel):
+    todo: int = 0
+    in_progress: int = 0
+    done: int = 0
+    total: int = 0

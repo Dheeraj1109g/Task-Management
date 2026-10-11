@@ -11,68 +11,176 @@ export type Task = {
   created_at: string;
 };
 
-export const getToken = () =>
-  typeof window === "undefined" ? null : localStorage.getItem("token");
-export const setToken = (t: string) => localStorage.setItem("token", t);
-export const clearToken = () => localStorage.removeItem("token");
+export type User = {
+  id: number;
+  email: string;
+  created_at: string;
+};
+
+export type TaskStats = {
+  todo: number;
+  in_progress: number;
+  done: number;
+  total: number;
+};
+
+export const getToken = (): string | null => {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("token");
+};
+
+export const setToken = (t: string) => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("token", t);
+  }
+};
+
+export const clearToken = () => {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("token");
+  }
+};
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
-  const res = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers: {
-      ...(options.headers ?? {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers: {
+        ...(options.headers ?? {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+  } catch {
+    throw new Error(
+      "Cannot connect to the server. Please ensure the backend is running."
+    );
+  }
 
   if (res.status === 401 && token) {
     clearToken();
-    window.location.href = "/login";
-    throw new Error("Session expired");
+    if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+      window.location.replace("/login?expired=1");
+    }
+    throw new Error("Session expired. Please log in again.");
   }
+
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(typeof err.detail === "string" ? err.detail : "Invalid input");
+    let msg = "Something went wrong";
+    if (typeof err.detail === "string") {
+      msg = err.detail;
+    } else if (Array.isArray(err.detail) && err.detail.length > 0) {
+      msg = err.detail.map((d: { msg?: string; message?: string }) => d.msg || d.message || "Invalid input").join("; ");
+    }
+    throw new Error(msg);
   }
+
   return res.status === 204 ? (undefined as T) : res.json();
 }
 
-const json = { "Content-Type": "application/json" };
+const jsonHeaders = { "Content-Type": "application/json" };
 
-export async function register(email: string, password: string) {
-  await request("/auth/register", {
+export async function register(email: string, password: string): Promise<User> {
+  return request<User>("/auth/register", {
     method: "POST",
-    headers: json,
-    body: JSON.stringify({ email, password }),
+    headers: jsonHeaders,
+    body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
   });
 }
 
-export async function login(email: string, password: string) {
-  const body = new URLSearchParams({ username: email, password });
+export async function login(email: string, password: string): Promise<string> {
+  const body = new URLSearchParams({ username: email.trim().toLowerCase(), password });
   const data = await request<{ access_token: string }>("/auth/login", {
     method: "POST",
     body,
   });
   setToken(data.access_token);
+  return data.access_token;
 }
 
-export const listTasks = (status?: TaskStatus) =>
-  request<Task[]>(`/tasks${status ? `?status=${status}` : ""}`);
+export async function getMe(): Promise<User> {
+  return request<User>("/auth/me");
+}
 
-export const createTask = (title: string, description?: string) =>
-  request<Task>("/tasks", {
+export async function listTasks(
+  status?: TaskStatus,
+  limit: number = 100,
+  offset: number = 0
+): Promise<Task[]> {
+  const params = new URLSearchParams();
+  if (status) params.append("status", status);
+  if (limit) params.append("limit", limit.toString());
+  if (offset) params.append("offset", offset.toString());
+
+  const query = params.toString() ? `?${params.toString()}` : "";
+  return request<Task[]>(`/tasks${query}`);
+}
+
+export async function getTask(id: number): Promise<Task> {
+  return request<Task>(`/tasks/${id}`);
+}
+
+export async function createTask(
+  title: string,
+  description?: string | null,
+  dueDate?: string | null
+): Promise<Task> {
+  return request<Task>("/tasks", {
     method: "POST",
-    headers: json,
-    body: JSON.stringify({ title, description: description || null }),
+    headers: jsonHeaders,
+    body: JSON.stringify({
+      title: title.trim(),
+      description: description?.trim() ? description.trim() : null,
+      due_date: dueDate ? new Date(dueDate).toISOString() : null,
+    }),
   });
+}
 
-export const updateTask = (id: number, data: Partial<Pick<Task, "title" | "description" | "status">>) =>
-  request<Task>(`/tasks/${id}`, {
+export async function updateTask(
+  id: number,
+  data: {
+    title?: string;
+    description?: string | null;
+    status?: TaskStatus;
+    due_date?: string | null;
+  }
+): Promise<Task> {
+  const payload: Record<string, unknown> = {};
+  if (data.title !== undefined) payload.title = data.title.trim();
+  if (data.description !== undefined) {
+    payload.description = data.description?.trim() ? data.description.trim() : null;
+  }
+  if (data.status !== undefined) payload.status = data.status;
+  if (data.due_date !== undefined) {
+    payload.due_date = data.due_date ? new Date(data.due_date).toISOString() : null;
+  }
+
+  return request<Task>(`/tasks/${id}`, {
     method: "PATCH",
-    headers: json,
-    body: JSON.stringify(data),
+    headers: jsonHeaders,
+    body: JSON.stringify(payload),
   });
+}
 
-export const deleteTask = (id: number) =>
-  request<void>(`/tasks/${id}`, { method: "DELETE" });
+export async function deleteTask(id: number): Promise<void> {
+  return request<void>(`/tasks/${id}`, { method: "DELETE" });
+}
+
+export async function getStats(): Promise<TaskStats> {
+  return request<TaskStats>("/tasks/stats");
+}
+
+export async function checkBackendHealth(): Promise<{ api: boolean; db: boolean }> {
+  try {
+    const apiRes = await fetch(`${API_URL}/health`).catch(() => null);
+    const dbRes = await fetch(`${API_URL}/health/db`).catch(() => null);
+    return {
+      api: apiRes?.ok ?? false,
+      db: dbRes?.ok ?? false,
+    };
+  } catch {
+    return { api: false, db: false };
+  }
+}

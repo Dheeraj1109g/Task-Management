@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select
+from sqlalchemy import  func, select
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.api.deps import get_current_user
 from app.models.user import User
 from app.models.task import Task, TaskStatus
-from app.schemas.task import TaskCreate, TaskUpdate, TaskRead
+from app.schemas.task import TaskCreate, TaskUpdate, TaskRead, TaskStats
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -37,6 +37,20 @@ def list_tasks(
         stmt = stmt.where(Task.status == status_filter)
     stmt = stmt.order_by(Task.created_at.desc()).limit(limit).offset(offset)
     return db.scalars(stmt).all()
+
+@router.get("/stats", response_model=TaskStats)
+def task_stats(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    rows = db.execute(
+        select(Task.status, func.count(Task.id))
+        .where(Task.owner_id == user.id)
+        .group_by(Task.status)
+    ).all()
+    counts = {
+        (status.value if hasattr(status, "value") else str(status)): count
+        for status, count in rows
+    }
+    stats = {s.value: counts.get(s.value, 0) for s in TaskStatus}
+    return TaskStats(**stats, total=sum(stats.values()))
 
 @router.get("/{task_id}", response_model=TaskRead)
 def get_task(task_id: int, db: Session = Depends(get_db),
