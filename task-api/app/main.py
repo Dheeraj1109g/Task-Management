@@ -32,14 +32,25 @@ def health_db():
         raise HTTPException(status_code=503, detail="Database unavailable")
     return {"database": "ok"}
 
+import os
 from fastapi.middleware.cors import CORSMiddleware
+
+cors_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://task-management-psww.onrender.com",
+    "https://task-management-7zys.vercel.app",
+    "https://task-management-kok1.vercel.app",
+]
+env_origins = os.getenv("ALLOWED_ORIGINS", "")
+if env_origins:
+    cors_origins.extend([o.strip() for o in env_origins.split(",") if o.strip()])
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://task-management-7zys.vercel.app",
-    ],
+    allow_origins=cors_origins,
+    allow_origin_regex=r"^https://.*(onrender\.com|vercel\.app)$",
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

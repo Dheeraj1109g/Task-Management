@@ -1,8 +1,12 @@
 import enum
 from datetime import datetime
+from typing import TYPE_CHECKING
 from sqlalchemy import String, Text, DateTime, ForeignKey, Enum, Index, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.session import Base
+
+if TYPE_CHECKING:
+    from app.models.user import User
 
 class TaskStatus(str, enum.Enum):
     todo = "todo"

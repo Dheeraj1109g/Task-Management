@@ -122,7 +122,7 @@ function LoginForm() {
               ? "Connecting to API..."
               : apiOnline
               ? "Server Online & Ready"
-              : "Server Offline (Check localhost:8000)"}
+              : "Server Offline (Cannot reach backend)"}
           </span>
         </div>
       </div>
