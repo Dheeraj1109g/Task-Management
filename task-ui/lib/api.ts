@@ -1,4 +1,5 @@
-const rawApiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const rawApiUrl =
+  process.env.NEXT_PUBLIC_API_URL || "https://task-management-psww.onrender.com";
 const API_URL = rawApiUrl.replace(/\/login\/?$/, "").replace(/\/+$/, "");
 
 export type TaskStatus = "todo" | "in_progress" | "done";
