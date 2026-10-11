@@ -38,11 +38,11 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://task-management-kok1.vercel.app",
+        "https://task-management-7zys.vercel.app",
     ],
     allow_methods=["*"],
     allow_headers=["*"],
-)  
+)
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
