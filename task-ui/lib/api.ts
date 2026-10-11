@@ -175,8 +175,8 @@ export async function getStats(): Promise<TaskStats> {
 
 export async function checkBackendHealth(): Promise<{ api: boolean; db: boolean }> {
   try {
-    const apiRes = await fetch(`${API_URL}/health`).catch(() => null);
-    const dbRes = await fetch(`${API_URL}/health/db`).catch(() => null);
+    const apiRes = await fetch(`${API_URL}/health`, { cache: "no-store" }).catch(() => null);
+    const dbRes = await fetch(`${API_URL}/health/db`, { cache: "no-store" }).catch(() => null);
     return {
       api: apiRes?.ok ?? false,
       db: dbRes?.ok ?? false,

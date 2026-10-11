@@ -41,16 +41,24 @@ function LoginForm() {
       router.replace("/tasks");
     }
 
-    // Check API status
+    // Check API status with periodic polling
     let active = true;
-    checkBackendHealth().then((h) => {
-      if (active) setApiOnline(h.api);
-    }).catch(() => {
-      if (active) setApiOnline(false);
-    });
+    const check = () => {
+      checkBackendHealth()
+        .then((h) => {
+          if (active) setApiOnline(h.api);
+        })
+        .catch(() => {
+          if (active) setApiOnline(false);
+        });
+    };
+
+    check();
+    const interval = setInterval(check, 4000);
 
     return () => {
       active = false;
+      clearInterval(interval);
     };
   }, [router]);
 
