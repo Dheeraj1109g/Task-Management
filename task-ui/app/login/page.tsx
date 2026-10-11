@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Layers,
@@ -12,6 +12,7 @@ import {
   ArrowRight,
   CheckCircle2,
   ShieldCheck,
+  RefreshCw,
 } from "lucide-react";
 import { login, register, getToken, checkBackendHealth } from "@/lib/api";
 import { useToast } from "@/components/Toast";
@@ -34,6 +35,27 @@ function LoginForm() {
   );
   const [loading, setLoading] = useState(false);
   const [apiOnline, setApiOnline] = useState<boolean | null>(null);
+  const [checking, setChecking] = useState(false);
+  const [failCount, setFailCount] = useState(0);
+
+  const check = useCallback(async () => {
+    setChecking(true);
+    try {
+      const h = await checkBackendHealth();
+      if (h.api) {
+        setApiOnline(true);
+        setFailCount(0);
+      } else {
+        setFailCount((prev) => prev + 1);
+        setApiOnline(false);
+      }
+    } catch {
+      setFailCount((prev) => prev + 1);
+      setApiOnline(false);
+    } finally {
+      setChecking(false);
+    }
+  }, []);
 
   useEffect(() => {
     // If already logged in, redirect to tasks
@@ -41,26 +63,15 @@ function LoginForm() {
       router.replace("/tasks");
     }
 
-    // Check API status with periodic polling
-    let active = true;
-    const check = () => {
-      checkBackendHealth()
-        .then((h) => {
-          if (active) setApiOnline(h.api);
-        })
-        .catch(() => {
-          if (active) setApiOnline(false);
-        });
-    };
-
     check();
-    const interval = setInterval(check, 4000);
+
+    const intervalTime = apiOnline ? 20000 : 3500;
+    const interval = setInterval(check, intervalTime);
 
     return () => {
-      active = false;
       clearInterval(interval);
     };
-  }, [router]);
+  }, [router, check, apiOnline]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,20 +129,33 @@ function LoginForm() {
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-xs text-slate-400 mt-1">
           <span
             className={`h-2 w-2 rounded-full ${
-              apiOnline === null
-                ? "bg-slate-500"
-                : apiOnline
+              apiOnline === true
                 ? "bg-emerald-400 animate-pulse"
+                : apiOnline === null || failCount < 3
+                ? "bg-amber-400 animate-pulse"
                 : "bg-rose-500"
             }`}
           />
           <span>
-            {apiOnline === null
-              ? "Connecting to API..."
-              : apiOnline
+            {apiOnline === true
               ? "Server Online & Ready"
+              : apiOnline === null
+              ? "Connecting to API..."
+              : failCount < 3
+              ? "Waking up server... (Please wait)"
               : "Server Offline (Cannot reach backend)"}
           </span>
+          {apiOnline === false && failCount >= 3 && (
+            <button
+              type="button"
+              onClick={() => check()}
+              disabled={checking}
+              className="ml-1 inline-flex items-center gap-1 text-[11px] font-medium text-indigo-400 hover:text-indigo-300 underline cursor-pointer disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3 h-3 ${checking ? "animate-spin" : ""}`} />
+              Retry
+            </button>
+          )}
         </div>
       </div>
 

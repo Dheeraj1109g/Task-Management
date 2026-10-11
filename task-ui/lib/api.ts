@@ -1,6 +1,20 @@
-const rawApiUrl =
-  process.env.NEXT_PUBLIC_API_URL || "https://task-management-psww.onrender.com";
-const API_URL = rawApiUrl.replace(/\/login\/?$/, "").replace(/\/+$/, "");
+export const getApiBaseUrl = (): string => {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envUrl && envUrl.trim()) {
+    return envUrl.trim().replace(/\/login\/?$/, "").replace(/\/+$/, "");
+  }
+
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1") {
+      return "http://localhost:8000";
+    }
+  }
+
+  return "https://task-management-psww.onrender.com";
+};
+
+export const API_URL = getApiBaseUrl();
 
 export type TaskStatus = "todo" | "in_progress" | "done";
 
@@ -43,11 +57,12 @@ export const clearToken = () => {
   }
 };
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+async function request<T>(path: string, options: RequestInit = {}, retries: number = 1): Promise<T> {
   const token = getToken();
+  const baseUrl = getApiBaseUrl();
   let res: Response;
   try {
-    res = await fetch(`${API_URL}${path}`, {
+    res = await fetch(`${baseUrl}${path}`, {
       ...options,
       headers: {
         ...(options.headers ?? {}),
@@ -55,6 +70,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       },
     });
   } catch {
+    if (retries > 0) {
+      await new Promise((r) => setTimeout(r, 1500));
+      return request<T>(path, options, retries - 1);
+    }
     throw new Error(
       "Cannot connect to the server. Please ensure the backend is running."
     );
@@ -174,10 +193,30 @@ export async function getStats(): Promise<TaskStats> {
   return request<TaskStats>("/tasks/stats");
 }
 
-export async function checkBackendHealth(): Promise<{ api: boolean; db: boolean }> {
+export interface HealthStatus {
+  api: boolean;
+  db: boolean;
+}
+
+export async function checkBackendHealth(): Promise<HealthStatus> {
+  const baseUrl = getApiBaseUrl();
   try {
-    const apiRes = await fetch(`${API_URL}/health`, { cache: "no-store" }).catch(() => null);
-    const dbRes = await fetch(`${API_URL}/health/db`, { cache: "no-store" }).catch(() => null);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+    const apiPromise = fetch(`${baseUrl}/health`, {
+      cache: "no-store",
+      signal: controller.signal,
+    }).catch(() => null);
+
+    const dbPromise = fetch(`${baseUrl}/health/db`, {
+      cache: "no-store",
+      signal: controller.signal,
+    }).catch(() => null);
+
+    const [apiRes, dbRes] = await Promise.all([apiPromise, dbPromise]);
+    clearTimeout(timeoutId);
+
     return {
       api: apiRes?.ok ?? false,
       db: dbRes?.ok ?? false,
