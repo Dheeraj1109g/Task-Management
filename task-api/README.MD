@@ -2,7 +2,7 @@
 
 Backend for a task manager: FastAPI, PostgreSQL, SQLAlchemy, Alembic, JWT auth.
 
-**Live API docs:** https://YOUR-SERVICE.onrender.com/docs
+**Live API docs:** https://task-management-7zys.vercel.app
 **Frontend:** https://task-management-kok1.vercel.app
 
 ## Features
