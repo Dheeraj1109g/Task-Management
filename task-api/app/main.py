@@ -18,3 +18,15 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 @app.get("/health", tags=["meta"])
 def health():
     return {"status": "ok"}
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://task-management-kok1.vercel.app",
+    ],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)    
