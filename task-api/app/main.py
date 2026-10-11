@@ -19,6 +19,15 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     logger.exception("Unhandled error on %s %s", request.method, request.url.path)
     return JSONResponse(status_code=500, content={"detail": "Internal server error"})
 
+@app.get("/", tags=["meta"])
+def root():
+    return {
+        "status": "online",
+        "message": "Task Management API is running",
+        "docs": "/docs",
+        "health": "/health",
+    }
+
 @app.get("/health", tags=["meta"])
 def health():
     return {"status": "ok"}
