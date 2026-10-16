@@ -1,14 +1,24 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
+  --background: #07090e;
+  --foreground: #f8fafc;
+  --card: #0d121f;
+  --card-foreground: #f8fafc;
+  --border: #1a2338;
+  --lime: #d2f801;
+  --lime-hover: #bce000;
+  --lime-glow: rgba(210, 248, 1, 0.3);
+}
+
+html:not(.dark) {
   --background: #f8fafc;
   --foreground: #09090b;
   --card: #ffffff;
   --card-foreground: #09090b;
   --border: #e2e8f0;
-  --lime: #d2f801;
-  --lime-hover: #bce000;
-  --lime-glow: rgba(210, 248, 1, 0.4);
 }
 
 body {
@@ -18,6 +28,7 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Custom scrollbars */
@@ -29,15 +40,14 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.25);
+  background: rgba(210, 248, 1, 0.2);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.4);
+  background: rgba(210, 248, 1, 0.4);
 }
 
 ::selection {
   background-color: #d2f801;
   color: #000000;
 }
-

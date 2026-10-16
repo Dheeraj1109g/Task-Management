@@ -23,40 +23,40 @@ export function StatsOverview({ stats, activeFilter, onSelectFilter }: StatsOver
       count: total,
       value: "" as const,
       icon: ListTodo,
-      textColor: "text-slate-950",
-      accentBg: "bg-[#d2f801]/30",
-      iconColor: "text-slate-950",
-      borderColor: activeFilter === "" ? "border-slate-900 ring-2 ring-slate-900/10 shadow-md" : "border-slate-200/90",
+      textColor: "text-slate-950 dark:text-white",
+      accentBg: "bg-[#d2f801]/30 dark:bg-[#d2f801]/15",
+      iconColor: "text-slate-950 dark:text-[#d2f801]",
+      borderColor: activeFilter === "" ? "border-slate-900 dark:border-white ring-2 ring-slate-900/10 dark:ring-white/20 shadow-md" : "border-slate-200/90 dark:border-[#1a2338]",
     },
     {
       label: "To Do",
       count: todo,
       value: "todo" as const,
       icon: Clock,
-      textColor: "text-sky-700",
-      accentBg: "bg-sky-100",
-      iconColor: "text-sky-600",
-      borderColor: activeFilter === "todo" ? "border-sky-500 ring-2 ring-sky-500/20 shadow-md" : "border-slate-200/90",
+      textColor: "text-sky-700 dark:text-sky-400",
+      accentBg: "bg-sky-100 dark:bg-sky-950/50",
+      iconColor: "text-sky-600 dark:text-sky-400",
+      borderColor: activeFilter === "todo" ? "border-sky-500 ring-2 ring-sky-500/20 shadow-md" : "border-slate-200/90 dark:border-[#1a2338]",
     },
     {
       label: "In Progress",
       count: inProgress,
       value: "in_progress" as const,
       icon: TrendingUp,
-      textColor: "text-amber-700",
-      accentBg: "bg-amber-100",
-      iconColor: "text-amber-600",
-      borderColor: activeFilter === "in_progress" ? "border-amber-500 ring-2 ring-amber-500/20 shadow-md" : "border-slate-200/90",
+      textColor: "text-amber-700 dark:text-amber-400",
+      accentBg: "bg-amber-100 dark:bg-amber-950/50",
+      iconColor: "text-amber-600 dark:text-amber-400",
+      borderColor: activeFilter === "in_progress" ? "border-amber-500 ring-2 ring-amber-500/20 shadow-md" : "border-slate-200/90 dark:border-[#1a2338]",
     },
     {
       label: "Completed",
       count: done,
       value: "done" as const,
       icon: CheckCircle2,
-      textColor: "text-slate-950",
-      accentBg: "bg-[#d2f801]/30",
-      iconColor: "text-slate-950",
-      borderColor: activeFilter === "done" ? "border-[#bfe700] ring-2 ring-[#d2f801]/40 shadow-md" : "border-slate-200/90",
+      textColor: "text-slate-950 dark:text-white",
+      accentBg: "bg-[#d2f801]/30 dark:bg-[#d2f801]/15",
+      iconColor: "text-slate-950 dark:text-[#d2f801]",
+      borderColor: activeFilter === "done" ? "border-[#bfe700] dark:border-[#d2f801] ring-2 ring-[#d2f801]/40 shadow-md" : "border-slate-200/90 dark:border-[#1a2338]",
     },
   ];
 
@@ -71,10 +71,10 @@ export function StatsOverview({ stats, activeFilter, onSelectFilter }: StatsOver
             <button
               key={item.label}
               onClick={() => onSelectFilter(item.value)}
-              className={`relative overflow-hidden text-left p-4 sm:p-5 rounded-2xl bg-white hover:bg-slate-50/80 border transition-all duration-200 shadow-sm cursor-pointer ${item.borderColor}`}
+              className={`relative overflow-hidden text-left p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0c101a] hover:bg-slate-50/80 dark:hover:bg-[#111724] border transition-all duration-200 shadow-sm cursor-pointer ${item.borderColor}`}
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   {item.label}
                 </span>
                 <div className={`p-2 rounded-xl ${item.accentBg} ${item.iconColor}`}>
@@ -103,12 +103,12 @@ export function StatsOverview({ stats, activeFilter, onSelectFilter }: StatsOver
 
       {/* Progress Bar */}
       {total > 0 && (
-        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#0c101a] border border-slate-200/90 dark:border-[#1a2338] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
-            <span className="text-slate-500 font-medium">Sprint Completion Velocity:</span>
-            <span className="font-bold text-slate-900">{done} of {total} tasks completed ({completionRate}%)</span>
+            <span className="text-slate-500 dark:text-slate-400 font-medium">Sprint Completion Velocity:</span>
+            <span className="font-bold text-slate-900 dark:text-white">{done} of {total} tasks completed ({completionRate}%)</span>
           </div>
-          <div className="w-full sm:w-64 h-2.5 rounded-full bg-slate-100 overflow-hidden flex ring-1 ring-slate-200/60">
+          <div className="w-full sm:w-64 h-2.5 rounded-full bg-slate-100 dark:bg-[#1a2338] overflow-hidden flex ring-1 ring-slate-200/60 dark:ring-[#1c273e]">
             <div
               className="bg-[#d2f801] transition-all duration-500"
               style={{ width: `${completionRate}%` }}

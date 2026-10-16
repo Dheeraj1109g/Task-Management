@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { login, register, getToken, checkBackendHealth, demoLogin, verifyEmail, UserRole } from "@/lib/api";
 import { useToast } from "@/components/Toast";
+import { ThemeToggle } from "@/components/ThemeContext";
 
 function LoginForm() {
   const router = useRouter();
@@ -132,10 +133,10 @@ function LoginForm() {
         >
           <Layers className="w-7 h-7 text-black stroke-[2.5]" />
         </Link>
-        <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 flex items-center justify-center gap-2">
+        <h1 className="text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white flex items-center justify-center gap-2">
           PulseFlow
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
           {mode === "login"
             ? "Sign in to access your role-governed task console."
             : "Create an enterprise account with token authentication."}
@@ -143,8 +144,8 @@ function LoginForm() {
       </div>
 
       {/* Quick 1-Click Demo Accounts */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-3.5 shadow-xs">
-        <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+      <div className="rounded-2xl border border-slate-200 dark:border-[#1c273e] bg-white dark:bg-[#0c101a] p-3.5 shadow-xs">
+        <div className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
           <span>One-Click Demo Roles (Instant Access):</span>
         </div>
@@ -153,46 +154,46 @@ function LoginForm() {
             type="button"
             disabled={loading}
             onClick={() => handleDemoSignIn("admin")}
-            className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#d2f801]/25 hover:bg-[#d2f801]/40 border border-[#bfe700] text-slate-950 transition-all text-xs font-bold cursor-pointer active:scale-95"
+            className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#d2f801]/25 dark:bg-[#d2f801]/15 hover:bg-[#d2f801]/40 dark:hover:bg-[#d2f801]/25 border border-[#bfe700] dark:border-[#d2f801]/30 text-slate-950 dark:text-[#d2f801] transition-all text-xs font-bold cursor-pointer active:scale-95"
           >
-            <Crown className="w-4 h-4 mb-0.5 text-slate-900" />
+            <Crown className="w-4 h-4 mb-0.5 text-slate-900 dark:text-[#d2f801]" />
             <span>Admin</span>
           </button>
           <button
             type="button"
             disabled={loading}
             onClick={() => handleDemoSignIn("manager")}
-            className="flex flex-col items-center justify-center p-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 transition-all text-xs font-bold cursor-pointer active:scale-95"
+            className="flex flex-col items-center justify-center p-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 border border-amber-200 dark:border-amber-800/50 text-amber-900 dark:text-amber-300 transition-all text-xs font-bold cursor-pointer active:scale-95"
           >
-            <Briefcase className="w-4 h-4 mb-0.5 text-amber-600" />
+            <Briefcase className="w-4 h-4 mb-0.5 text-amber-600 dark:text-amber-400" />
             <span>Manager</span>
           </button>
           <button
             type="button"
             disabled={loading}
             onClick={() => handleDemoSignIn("member")}
-            className="flex flex-col items-center justify-center p-2 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-900 transition-all text-xs font-bold cursor-pointer active:scale-95"
+            className="flex flex-col items-center justify-center p-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 hover:bg-sky-100 dark:hover:bg-sky-900/50 border border-sky-200 dark:border-sky-800/50 text-sky-900 dark:text-sky-300 transition-all text-xs font-bold cursor-pointer active:scale-95"
           >
-            <UserIcon className="w-4 h-4 mb-0.5 text-sky-600" />
+            <UserIcon className="w-4 h-4 mb-0.5 text-sky-600 dark:text-sky-400" />
             <span>Member</span>
           </button>
         </div>
       </div>
 
       {/* Card Form */}
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xl space-y-6">
+      <div className="rounded-3xl border border-slate-200 dark:border-[#1c273e] bg-white dark:bg-[#0c101a] p-6 sm:p-8 shadow-xl space-y-6">
         {/* Token Verification Alert after register */}
         {issuedToken ? (
           <div className="space-y-4 animate-in fade-in zoom-in-95">
-            <div className="p-4 rounded-2xl bg-lime-50 border border-lime-200 text-center space-y-2">
+            <div className="p-4 rounded-2xl bg-lime-50 dark:bg-[#11170d] border border-lime-200 dark:border-[#243314] text-center space-y-2">
               <div className="w-10 h-10 rounded-xl bg-[#d2f801] text-black flex items-center justify-center mx-auto shadow-xs">
                 <ShieldCheck className="w-6 h-6 stroke-[2.5]" />
               </div>
-              <h3 className="text-base font-extrabold text-slate-950">Email Verification Token Dispatched</h3>
-              <p className="text-xs text-slate-600">
-                We generated a secure cryptographic token for <strong>{registeredEmail}</strong>.
+              <h3 className="text-base font-extrabold text-slate-950 dark:text-white">Email Verification Token Dispatched</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-300">
+                We generated a secure cryptographic token for <strong className="text-slate-950 dark:text-white">{registeredEmail}</strong>.
               </p>
-              <div className="p-2.5 rounded-xl bg-white border border-slate-200 font-mono text-xs text-slate-950 font-bold break-all select-all shadow-2xs">
+              <div className="p-2.5 rounded-xl bg-white dark:bg-[#07090e] border border-slate-200 dark:border-[#1c273e] font-mono text-xs text-slate-950 dark:text-[#d2f801] font-bold break-all select-all shadow-2xs">
                 {issuedToken}
               </div>
             </div>
@@ -222,7 +223,7 @@ function LoginForm() {
                 await login(registeredEmail, password);
                 router.push("/tasks");
               }}
-              className="w-full py-2.5 text-xs text-slate-500 hover:text-slate-900 font-medium transition-colors cursor-pointer text-center"
+              className="w-full py-2.5 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium transition-colors cursor-pointer text-center"
             >
               Skip verification for now →
             </button>
@@ -230,7 +231,7 @@ function LoginForm() {
         ) : (
           <>
             {/* Mode Switcher Tabs */}
-            <div className="grid grid-cols-2 p-1 rounded-2xl bg-slate-100 border border-slate-200">
+            <div className="grid grid-cols-2 p-1 rounded-2xl bg-slate-100 dark:bg-[#07090e] border border-slate-200 dark:border-[#1c273e]">
               <button
                 type="button"
                 onClick={() => {
@@ -239,8 +240,8 @@ function LoginForm() {
                 }}
                 className={`py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   mode === "login"
-                    ? "bg-slate-950 text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-slate-950 dark:bg-white text-white dark:text-black shadow-xs font-extrabold"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 Sign In
@@ -253,8 +254,8 @@ function LoginForm() {
                 }}
                 className={`py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   mode === "register"
-                    ? "bg-slate-950 text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-slate-950 dark:bg-white text-white dark:text-black shadow-xs font-extrabold"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 Create Account
@@ -263,8 +264,8 @@ function LoginForm() {
 
             {/* Error Banner */}
             {error && (
-              <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs animate-in fade-in">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-600" />
+              <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/50 text-rose-700 dark:text-rose-300 text-xs animate-in fade-in">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" />
                 <div className="flex-1 font-semibold">{error}</div>
               </div>
             )}
@@ -273,18 +274,18 @@ function LoginForm() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-700">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Mail className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="email"
                     required
                     placeholder="name@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:bg-white transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-[#1c273e] bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-900 dark:focus:border-[#d2f801] focus:bg-white dark:focus:bg-[#07090e] transition-all"
                   />
                 </div>
               </div>
@@ -292,11 +293,11 @@ function LoginForm() {
               {/* Password */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <label className="font-semibold text-slate-700">Password</label>
-                  <span className="text-slate-400 text-[11px]">Min. 8 characters</span>
+                  <label className="font-semibold text-slate-700 dark:text-slate-300">Password</label>
+                  <span className="text-slate-400 dark:text-slate-500 text-[11px]">Min. 8 characters</span>
                 </div>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type={showPassword ? "text" : "password"}
                     required
@@ -304,12 +305,12 @@ function LoginForm() {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:bg-white transition-all"
+                    className="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-[#1c273e] bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-900 dark:focus:border-[#d2f801] focus:bg-white dark:focus:bg-[#07090e] transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="p-1.5 text-slate-400 hover:text-slate-700 absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer"
+                    className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer"
                     tabIndex={-1}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -321,11 +322,11 @@ function LoginForm() {
               {mode === "register" && (
                 <>
                   <div className="space-y-1.5 animate-in fade-in">
-                    <label className="block text-xs font-semibold text-slate-700">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Confirm Password
                     </label>
                     <div className="relative">
-                      <ShieldCheck className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <ShieldCheck className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                       <input
                         type={showPassword ? "text" : "password"}
                         required
@@ -333,23 +334,23 @@ function LoginForm() {
                         placeholder="••••••••"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:bg-white transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 dark:border-[#1c273e] bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-900 dark:focus:border-[#d2f801] focus:bg-white dark:focus:bg-[#07090e] transition-all"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-1.5 animate-in fade-in">
-                    <label className="block text-xs font-semibold text-slate-700">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                       Select Organization Role
                     </label>
                     <select
                       value={selectedRole}
                       onChange={(e) => setSelectedRole(e.target.value as UserRole)}
-                      className="w-full px-3.5 py-2.5 text-xs font-bold rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:outline-none focus:border-slate-900 focus:bg-white cursor-pointer"
+                      className="w-full px-3.5 py-2.5 text-xs font-bold rounded-xl border border-slate-200 dark:border-[#1c273e] bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-white focus:outline-none focus:border-slate-900 dark:focus:border-[#d2f801] focus:bg-white dark:focus:bg-[#07090e] cursor-pointer"
                     >
-                      <option value="member">👤 Member (Individual Workflow)</option>
-                      <option value="manager">⚡ Manager (Sprint &amp; Team Oversight)</option>
-                      <option value="admin">👑 Admin (Full Governance &amp; Security)</option>
+                      <option value="member" className="bg-white dark:bg-[#0d121f] text-slate-900 dark:text-white">👤 Member (Individual Workflow)</option>
+                      <option value="manager" className="bg-white dark:bg-[#0d121f] text-slate-900 dark:text-white">⚡ Manager (Sprint &amp; Team Oversight)</option>
+                      <option value="admin" className="bg-white dark:bg-[#0d121f] text-slate-900 dark:text-white">👑 Admin (Full Governance &amp; Security)</option>
                     </select>
                   </div>
                 </>
@@ -376,7 +377,7 @@ function LoginForm() {
             </form>
 
             {/* Quick toggle footer */}
-            <div className="pt-2 text-center text-xs text-slate-500">
+            <div className="pt-2 text-center text-xs text-slate-500 dark:text-slate-400">
               {mode === "login" ? (
                 <p>
                   Don&apos;t have an account yet?{" "}
@@ -386,7 +387,7 @@ function LoginForm() {
                       setMode("register");
                       setError("");
                     }}
-                    className="font-bold text-slate-900 hover:underline cursor-pointer"
+                    className="font-bold text-slate-900 dark:text-[#d2f801] hover:underline cursor-pointer"
                   >
                     Create one now
                   </button>
@@ -400,7 +401,7 @@ function LoginForm() {
                       setMode("login");
                       setError("");
                     }}
-                    className="font-bold text-slate-900 hover:underline cursor-pointer"
+                    className="font-bold text-slate-900 dark:text-[#d2f801] hover:underline cursor-pointer"
                   >
                     Sign in here
                   </button>
@@ -412,24 +413,24 @@ function LoginForm() {
       </div>
 
       {/* Feature Highlights */}
-      <div className="grid grid-cols-3 gap-2 text-center text-[11px] text-slate-500 pt-2 font-medium">
+      <div className="grid grid-cols-3 gap-2 text-center text-[11px] text-slate-500 dark:text-slate-400 pt-2 font-medium">
         <div className="flex flex-col items-center gap-1">
-          <ShieldCheck className="w-4 h-4 text-emerald-600" />
+          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           <span>Role-Based RBAC</span>
         </div>
         <div className="flex flex-col items-center gap-1">
-          <Mail className="w-4 h-4 text-slate-700" />
+          <Mail className="w-4 h-4 text-slate-700 dark:text-slate-300" />
           <span>Token Email Verification</span>
         </div>
         <div className="flex flex-col items-center gap-1">
-          <Layers className="w-4 h-4 text-black" />
+          <Layers className="w-4 h-4 text-black dark:text-[#d2f801]" />
           <span>Fintech Task Engine</span>
         </div>
       </div>
 
       {/* Back to Home */}
       <div className="text-center">
-        <Link href="/" className="text-xs text-slate-500 hover:text-slate-900 font-medium transition-colors">
+        <Link href="/" className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium transition-colors">
           ← Back to Landing Page
         </Link>
       </div>
@@ -439,15 +440,20 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-[#d2f801] selection:text-black">
+    <main className="min-h-screen bg-[#f8fafc] dark:bg-[#07090e] text-slate-900 dark:text-slate-100 flex items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-[#d2f801] selection:text-black transition-colors duration-200">
+      {/* Floating Theme Toggle in top-right */}
+      <div className="absolute top-6 right-6 z-20">
+        <ThemeToggle />
+      </div>
+
       {/* Background radial glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#d2f801]/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-slate-200/50 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#d2f801]/10 dark:bg-[#d2f801]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-slate-200/50 dark:bg-sky-950/20 rounded-full blur-3xl pointer-events-none" />
 
       <Suspense
         fallback={
-          <div className="flex flex-col items-center gap-3 text-slate-500">
-            <div className="w-8 h-8 border-2 border-slate-300 border-t-black rounded-full animate-spin" />
+          <div className="flex flex-col items-center gap-3 text-slate-500 dark:text-slate-400">
+            <div className="w-8 h-8 border-2 border-slate-300 dark:border-slate-700 border-t-black dark:border-t-[#d2f801] rounded-full animate-spin" />
             <p className="text-xs">Loading authentication...</p>
           </div>
         }

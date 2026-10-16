@@ -248,7 +248,7 @@ export default function TasksPage() {
   }, [tasks, filter, searchQuery, sortBy]);
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col font-sans selection:bg-[#d2f801] selection:text-black">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#07090e] text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-[#d2f801] selection:text-black transition-colors duration-200">
       {/* Navbar */}
       <Navbar
         user={user}
@@ -260,20 +260,20 @@ export default function TasksPage() {
 
       {/* Unverified Email Security Banner */}
       {user && !user.is_verified && (
-        <div className="bg-lime-50/90 border-b border-lime-200/90 px-4 py-3">
+        <div className="bg-lime-50/90 dark:bg-[#11170d] border-b border-lime-200/90 dark:border-[#243314] px-4 py-3">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2.5 text-slate-800">
-              <ShieldAlert className="w-4 h-4 shrink-0 text-slate-950" />
+            <div className="flex items-center gap-2.5 text-slate-800 dark:text-slate-200">
+              <ShieldAlert className="w-4 h-4 shrink-0 text-slate-950 dark:text-[#d2f801]" />
               <span>
                 <strong>Email Verification Pending:</strong> A security token was dispatched to{" "}
-                <span className="font-bold text-slate-950 underline">{user.email}</span>. Confirm your email to activate full RBAC permissions.
+                <span className="font-bold text-slate-950 dark:text-[#d2f801] underline">{user.email}</span>. Confirm your email to activate full RBAC permissions.
               </span>
             </div>
             <div className="flex items-center gap-2 self-end sm:self-auto">
               <button
                 onClick={handleResendEmail}
                 disabled={resendingEmail}
-                className="px-3 py-1 rounded-full bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-semibold transition-colors cursor-pointer shadow-2xs"
+                className="px-3 py-1 rounded-full bg-white dark:bg-[#0d121f] hover:bg-slate-50 dark:hover:bg-[#151d30] text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-[#1c273e] font-semibold transition-colors cursor-pointer shadow-2xs"
               >
                 {resendingEmail ? "Sending..." : "Resend Token"}
               </button>
@@ -291,27 +291,27 @@ export default function TasksPage() {
       {/* Main Workspace */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Workspace Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200/90">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200/90 dark:border-[#1a2338]">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white">
                 Fintech Operations Dashboard
               </h1>
               {user?.role && (
                 <span
                   className={`text-xs font-black uppercase px-2.5 py-0.5 rounded-full border ${
                     user.role === "admin"
-                      ? "bg-[#d2f801]/30 text-slate-950 border-[#bfe700]"
+                      ? "bg-[#d2f801]/30 text-slate-950 border-[#bfe700] dark:text-[#d2f801] dark:bg-[#d2f801]/15 dark:border-[#d2f801]/30"
                       : user.role === "manager"
-                      ? "bg-amber-100 text-amber-900 border-amber-300"
-                      : "bg-sky-100 text-sky-900 border-sky-300"
+                      ? "bg-amber-100 text-amber-900 border-amber-300 dark:text-amber-300 dark:bg-amber-950/40 dark:border-amber-700/50"
+                      : "bg-sky-100 text-sky-900 border-sky-300 dark:text-sky-300 dark:bg-sky-950/40 dark:border-sky-700/50"
                   }`}
                 >
                   {user.role} console
                 </span>
               )}
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               Real-time sprint velocity, RBAC governance, and task execution pipeline.
             </p>
           </div>
@@ -319,13 +319,13 @@ export default function TasksPage() {
           <div className="flex items-center gap-2.5">
             {/* Team Scope Switcher (for Admin/Manager) */}
             {isPrivileged && (
-              <div className="flex items-center p-1 rounded-full bg-slate-100 border border-slate-200">
+              <div className="flex items-center p-1 rounded-full bg-slate-100 dark:bg-[#0c101a] border border-slate-200 dark:border-[#1c273e]">
                 <button
                   onClick={() => handleScopeChange("mine")}
                   className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all cursor-pointer ${
                     scope === "mine"
                       ? "bg-[#d2f801] text-black shadow-xs"
-                      : "text-slate-600 hover:text-slate-950"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white"
                   }`}
                 >
                   My Tasks
@@ -335,7 +335,7 @@ export default function TasksPage() {
                   className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-extrabold transition-all cursor-pointer ${
                     scope === "team"
                       ? "bg-[#d2f801] text-black shadow-xs"
-                      : "text-slate-600 hover:text-slate-950"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white"
                   }`}
                 >
                   <Users className="w-3.5 h-3.5" />
@@ -348,10 +348,10 @@ export default function TasksPage() {
             <button
               onClick={handleRefreshClick}
               disabled={isRefreshing}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors cursor-pointer shadow-2xs"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 dark:border-[#1c273e] bg-white dark:bg-[#0c101a] hover:bg-slate-50 dark:hover:bg-[#141a28] text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors cursor-pointer shadow-2xs"
               title="Refresh Tasks"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-slate-900" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-slate-900 dark:text-[#d2f801]" : ""}`} />
               <span className="hidden sm:inline">Sync</span>
             </button>
 
@@ -359,9 +359,9 @@ export default function TasksPage() {
             {user?.role === "admin" && (
               <button
                 onClick={() => setIsAdminModalOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-800 border border-slate-200 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-slate-100 dark:bg-[#0c101a] hover:bg-slate-200/80 dark:hover:bg-[#141a28] text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-[#1c273e] text-xs font-bold transition-all cursor-pointer shadow-2xs"
               >
-                <Crown className="w-3.5 h-3.5 text-slate-900" />
+                <Crown className="w-3.5 h-3.5 text-slate-900 dark:text-[#d2f801]" />
                 <span>Manage Roles</span>
               </button>
             )}
@@ -376,22 +376,22 @@ export default function TasksPage() {
         />
 
         {/* Controls Toolbar: Search, Sort, View Toggle */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white shadow-xs p-4 space-y-3">
+        <div className="rounded-2xl border border-slate-200/90 dark:border-[#1a2338] bg-white dark:bg-[#0c101a] shadow-xs p-4 space-y-3">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 placeholder={scope === "team" ? "Search tasks by title, description, or assigned member..." : "Search your tasks..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50/60 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:bg-white transition-all"
+                className="w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 dark:border-[#1c273e] bg-slate-50/60 dark:bg-[#07090e] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-slate-900 dark:focus:border-[#d2f801] focus:bg-white dark:focus:bg-[#07090e] transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="p-1 text-slate-400 hover:text-slate-700 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                  className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -405,24 +405,24 @@ export default function TasksPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortOption)}
-                  className="appearance-none pl-8 pr-8 py-2 text-xs font-bold rounded-xl border border-slate-200 bg-slate-50/60 text-slate-700 hover:text-slate-950 focus:outline-none focus:border-slate-900 cursor-pointer"
+                  className="appearance-none pl-8 pr-8 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-[#1c273e] bg-slate-50/60 dark:bg-[#07090e] text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white focus:outline-none focus:border-slate-900 dark:focus:border-[#d2f801] cursor-pointer"
                 >
-                  <option value="created_desc">Newest First</option>
-                  <option value="created_asc">Oldest First</option>
-                  <option value="due_soon">Due Date (Soonest)</option>
-                  <option value="title_asc">Title (A-Z)</option>
+                  <option value="created_desc" className="bg-white dark:bg-[#0d121f] text-slate-900 dark:text-white">Newest First</option>
+                  <option value="created_asc" className="bg-white dark:bg-[#0d121f] text-slate-900 dark:text-white">Oldest First</option>
+                  <option value="due_soon" className="bg-white dark:bg-[#0d121f] text-slate-900 dark:text-white">Due Date (Soonest)</option>
+                  <option value="title_asc" className="bg-white dark:bg-[#0d121f] text-slate-900 dark:text-white">Title (A-Z)</option>
                 </select>
-                <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <ArrowUpDown className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
 
               {/* View Mode Toggle: List vs Kanban */}
-              <div className="flex items-center p-1 rounded-xl bg-slate-100 border border-slate-200">
+              <div className="flex items-center p-1 rounded-xl bg-slate-100 dark:bg-[#07090e] border border-slate-200 dark:border-[#1c273e]">
                 <button
                   onClick={() => setViewMode("list")}
                   className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
                     viewMode === "list"
                       ? "bg-[#d2f801] text-black shadow-xs"
-                      : "text-slate-600 hover:text-slate-950"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white"
                   }`}
                   title="List View"
                 >
@@ -434,7 +434,7 @@ export default function TasksPage() {
                   className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
                     viewMode === "kanban"
                       ? "bg-[#d2f801] text-black shadow-xs"
-                      : "text-slate-600 hover:text-slate-950"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white"
                   }`}
                   title="Kanban Board View"
                 >
@@ -446,8 +446,8 @@ export default function TasksPage() {
           </div>
 
           {/* Filter Pills */}
-          <div className="flex items-center flex-wrap gap-2 pt-2 border-t border-slate-100 text-xs">
-            <span className="text-slate-400 font-bold flex items-center gap-1">
+          <div className="flex items-center flex-wrap gap-2 pt-2 border-t border-slate-100 dark:border-[#1c273e] text-xs">
+            <span className="text-slate-400 dark:text-slate-500 font-bold flex items-center gap-1">
               <Filter className="w-3 h-3" /> Filter:
             </span>
 
@@ -455,8 +455,8 @@ export default function TasksPage() {
               onClick={() => setFilter("")}
               className={`px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
                 filter === ""
-                  ? "bg-slate-950 text-white font-extrabold shadow-xs"
-                  : "bg-slate-100 hover:bg-slate-200/80 text-slate-700 border border-slate-200"
+                  ? "bg-slate-950 dark:bg-white text-white dark:text-black font-extrabold shadow-xs"
+                  : "bg-slate-100 dark:bg-[#0e1422] hover:bg-slate-200/80 dark:hover:bg-[#151d30] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#1c273e]"
               }`}
             >
               All ({tasks.length})
@@ -466,7 +466,7 @@ export default function TasksPage() {
               className={`px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
                 filter === "todo"
                   ? "bg-sky-600 text-white font-extrabold shadow-xs"
-                  : "bg-slate-100 hover:bg-slate-200/80 text-slate-700 hover:text-sky-700 border border-slate-200"
+                  : "bg-slate-100 dark:bg-[#0e1422] hover:bg-slate-200/80 dark:hover:bg-[#151d30] text-slate-700 dark:text-slate-300 hover:text-sky-700 dark:hover:text-sky-300 border border-slate-200 dark:border-[#1c273e]"
               }`}
             >
               To Do ({tasks.filter((t) => t.status === "todo").length})
@@ -476,7 +476,7 @@ export default function TasksPage() {
               className={`px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
                 filter === "in_progress"
                   ? "bg-amber-600 text-white font-extrabold shadow-xs"
-                  : "bg-slate-100 hover:bg-slate-200/80 text-slate-700 hover:text-amber-700 border border-slate-200"
+                  : "bg-slate-100 dark:bg-[#0e1422] hover:bg-slate-200/80 dark:hover:bg-[#151d30] text-slate-700 dark:text-slate-300 hover:text-amber-700 dark:hover:text-amber-300 border border-slate-200 dark:border-[#1c273e]"
               }`}
             >
               In Progress ({tasks.filter((t) => t.status === "in_progress").length})
@@ -486,7 +486,7 @@ export default function TasksPage() {
               className={`px-3 py-1 rounded-full font-bold transition-all cursor-pointer ${
                 filter === "done"
                   ? "bg-[#d2f801] text-black font-extrabold shadow-xs"
-                  : "bg-slate-100 hover:bg-slate-200/80 text-slate-700 hover:text-black border border-slate-200"
+                  : "bg-slate-100 dark:bg-[#0e1422] hover:bg-slate-200/80 dark:hover:bg-[#151d30] text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-[#d2f801] border border-slate-200 dark:border-[#1c273e]"
               }`}
             >
               Completed ({tasks.filter((t) => t.status === "done").length})
@@ -498,7 +498,7 @@ export default function TasksPage() {
                   setFilter("");
                   setSearchQuery("");
                 }}
-                className="ml-auto text-xs text-slate-500 hover:text-rose-600 font-medium transition-colors cursor-pointer"
+                className="ml-auto text-xs text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 font-medium transition-colors cursor-pointer"
               >
                 Reset filters
               </button>
@@ -532,12 +532,12 @@ export default function TasksPage() {
                 />
               ))
             ) : (
-              <div className="rounded-3xl border border-dashed border-slate-300 p-12 text-center bg-white shadow-xs">
-                <div className="mx-auto w-12 h-12 rounded-2xl bg-[#d2f801]/30 flex items-center justify-center text-black mb-3">
+              <div className="rounded-3xl border border-dashed border-slate-300 dark:border-[#1c273e] p-12 text-center bg-white dark:bg-[#0c101a] shadow-xs">
+                <div className="mx-auto w-12 h-12 rounded-2xl bg-[#d2f801]/30 dark:bg-[#d2f801]/15 flex items-center justify-center text-black dark:text-[#d2f801] mb-3">
                   <Inbox className="w-6 h-6" />
                 </div>
-                <h3 className="text-base font-bold text-slate-900">No tasks found</h3>
-                <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">No tasks found</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
                   {searchQuery || filter
                     ? "Try adjusting your search criteria or clearing active filters."
                     : scope === "team"

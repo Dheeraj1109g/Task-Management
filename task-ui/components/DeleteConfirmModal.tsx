@@ -35,20 +35,20 @@ export function DeleteConfirmModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 sm:p-7 shadow-2xl z-10 animate-in fade-in zoom-in-95 duration-150">
+      <div className="relative w-full max-w-md rounded-3xl border border-slate-200 dark:border-[#1c273e] bg-white dark:bg-[#0d121f] p-6 sm:p-7 shadow-2xl z-10 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-start gap-4">
-          <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 shrink-0">
+          <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/50 text-rose-600 dark:text-rose-400 shrink-0">
             <AlertTriangle className="w-6 h-6" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-base font-extrabold text-slate-900">Delete Task</h3>
-            <p className="mt-1 text-sm text-slate-600">
+            <h3 className="text-base font-extrabold text-slate-900 dark:text-white">Delete Task</h3>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
               Are you sure you want to permanently delete{" "}
-              <span className="font-bold text-slate-900 break-words">&ldquo;{task.title}&rdquo;</span>?
+              <span className="font-bold text-slate-900 dark:text-white break-words">&ldquo;{task.title}&rdquo;</span>?
               This action cannot be undone.
             </p>
           </div>
@@ -59,7 +59,7 @@ export function DeleteConfirmModal({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="px-4 py-2 text-sm font-semibold rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+            className="px-4 py-2 text-sm font-semibold rounded-full border border-slate-200 dark:border-[#1c273e] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#151d30] transition-colors cursor-pointer"
           >
             Cancel
           </button>
