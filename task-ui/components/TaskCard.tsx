@@ -11,12 +11,14 @@ import {
   Circle,
   AlertCircle,
   ArrowRight,
-  ChevronDown
+  ChevronDown,
+  User,
 } from "lucide-react";
-import { Task, TaskStatus } from "@/lib/api";
+import { Task, TaskStatus, User as UserType } from "@/lib/api";
 
 interface TaskCardProps {
   task: Task;
+  currentUser?: UserType | null;
   onUpdateStatus: (id: number, status: TaskStatus) => Promise<void>;
   onEdit: (task: Task) => void;
   onDeleteRequest: (task: Task) => void;
@@ -25,6 +27,7 @@ interface TaskCardProps {
 
 export function TaskCard({
   task,
+  currentUser,
   onUpdateStatus,
   onEdit,
   onDeleteRequest,
@@ -37,12 +40,18 @@ export function TaskCard({
   const isInProgress = task.status === "in_progress";
   const isTodo = task.status === "todo";
 
+  const isOwner = currentUser?.id === task.owner_id;
+  const isAdmin = currentUser?.role === "admin";
+  const isManager = currentUser?.role === "manager";
+
+  const canEdit = isOwner || isAdmin || isManager;
+  const canDelete = isOwner || isAdmin;
+
   // Due date logic
   let dueDateInfo: { text: string; status: "overdue" | "today" | "upcoming" } | null = null;
   if (task.due_date) {
     const due = new Date(task.due_date);
     const now = new Date();
-    // Compare dates only
     const dueDay = new Date(due.getFullYear(), due.getMonth(), due.getDate()).getTime();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
     const diffDays = Math.round((dueDay - today) / (1000 * 60 * 60 * 24));
@@ -77,7 +86,7 @@ export function TaskCard({
   });
 
   const handleToggleDone = () => {
-    if (isBusy) return;
+    if (isBusy || !canEdit) return;
     const nextStatus: TaskStatus = isDone ? "todo" : "done";
     onUpdateStatus(task.id, nextStatus);
   };
@@ -92,19 +101,19 @@ export function TaskCard({
     <div
       className={`group relative rounded-2xl border p-4 transition-all duration-200 ${
         isDone
-          ? "bg-slate-900/30 border-slate-800/50 opacity-75 hover:opacity-100"
-          : "bg-slate-900/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/90 shadow-sm"
+          ? "bg-[#0d121f]/50 border-slate-800/60 opacity-80 hover:opacity-100"
+          : "bg-[#0d121f] border-slate-800/80 hover:border-slate-700/90 hover:bg-[#111728] shadow-sm hover:shadow-indigo-500/5"
       }`}
     >
       <div className="flex items-start gap-3.5">
         {/* Checkbox / Complete button */}
         <button
           onClick={handleToggleDone}
-          disabled={isBusy}
-          title={isDone ? "Mark as To Do" : "Mark as Done"}
-          className={`mt-0.5 shrink-0 rounded-full transition-transform active:scale-90 cursor-pointer ${
-            isBusy ? "opacity-50" : ""
-          }`}
+          disabled={isBusy || !canEdit}
+          title={!canEdit ? "Permission required to edit" : isDone ? "Mark as To Do" : "Mark as Done"}
+          className={`mt-0.5 shrink-0 rounded-full transition-transform active:scale-90 ${
+            !canEdit ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
+          } ${isBusy ? "opacity-50" : ""}`}
         >
           {isDone ? (
             <CheckCircle2 className="w-5 h-5 text-emerald-400 fill-emerald-500/20" />
@@ -129,45 +138,51 @@ export function TaskCard({
             </h3>
 
             {/* Actions Menu */}
-            <div className="relative shrink-0">
-              <button
-                onClick={() => setMenuOpen(!menuOpen)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-colors cursor-pointer"
-              >
-                <MoreVertical className="w-4 h-4" />
-              </button>
+            {(canEdit || canDelete) && (
+              <div className="relative shrink-0">
+                <button
+                  onClick={() => setMenuOpen(!menuOpen)}
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-colors cursor-pointer"
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </button>
 
-              {menuOpen && (
-                <>
-                  <div
-                    className="fixed inset-0 z-20"
-                    onClick={() => setMenuOpen(false)}
-                  />
-                  <div className="absolute right-0 top-7 z-30 w-36 rounded-xl border border-slate-800 bg-slate-950 p-1 shadow-2xl animate-in fade-in zoom-in-95">
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        onEdit(task);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 rounded-lg transition-colors cursor-pointer"
-                    >
-                      <Edit3 className="w-3.5 h-3.5 text-indigo-400" />
-                      Edit Task
-                    </button>
-                    <button
-                      onClick={() => {
-                        setMenuOpen(false);
-                        onDeleteRequest(task);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      Delete
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
+                {menuOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-20"
+                      onClick={() => setMenuOpen(false)}
+                    />
+                    <div className="absolute right-0 top-7 z-30 w-36 rounded-xl border border-slate-800 bg-[#090d16] p-1 shadow-2xl animate-in fade-in zoom-in-95">
+                      {canEdit && (
+                        <button
+                          onClick={() => {
+                            setMenuOpen(false);
+                            onEdit(task);
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <Edit3 className="w-3.5 h-3.5 text-indigo-400" />
+                          Edit Task
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          onClick={() => {
+                            setMenuOpen(false);
+                            onDeleteRequest(task);
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Description */}
@@ -197,9 +212,11 @@ export function TaskCard({
             <div className="relative">
               <select
                 value={task.status}
-                disabled={isBusy}
+                disabled={isBusy || !canEdit}
                 onChange={(e) => onUpdateStatus(task.id, e.target.value as TaskStatus)}
-                className={`appearance-none pl-2.5 pr-6 py-1 rounded-full font-medium text-xs border cursor-pointer transition-all ${
+                className={`appearance-none pl-2.5 pr-6 py-1 rounded-full font-medium text-xs border transition-all ${
+                  !canEdit ? "opacity-60 cursor-not-allowed" : "cursor-pointer"
+                } ${
                   isTodo
                     ? "bg-sky-500/10 text-sky-300 border-sky-500/20 hover:border-sky-500/40"
                     : isInProgress
@@ -213,6 +230,17 @@ export function TaskCard({
               </select>
               <ChevronDown className="w-3 h-3 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
             </div>
+
+            {/* Owner Email tag if team view or not current user */}
+            {task.owner_email && (
+              <span
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full font-medium text-[11px] bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 max-w-[160px] truncate"
+                title={`Assigned to: ${task.owner_email}`}
+              >
+                <User className="w-3 h-3 shrink-0" />
+                <span className="truncate">{task.owner_email.split("@")[0]}</span>
+              </span>
+            )}
 
             {/* Due date badge */}
             {dueDateInfo && (
@@ -241,7 +269,7 @@ export function TaskCard({
             </span>
 
             {/* Quick forward status */}
-            {!isDone && (
+            {!isDone && canEdit && (
               <button
                 onClick={() => onUpdateStatus(task.id, getNextStatus())}
                 disabled={isBusy}

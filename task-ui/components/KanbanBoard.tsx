@@ -1,11 +1,12 @@
 "use client";
 
 import React from "react";
-import { Plus, Clock, TrendingUp, CheckCircle2, ArrowRight, ArrowLeft, Edit3, Trash2 } from "lucide-react";
-import { Task, TaskStatus } from "@/lib/api";
+import { Plus, Clock, TrendingUp, CheckCircle2, ArrowRight, ArrowLeft, Edit3, Trash2, User } from "lucide-react";
+import { Task, TaskStatus, User as UserType } from "@/lib/api";
 
 interface KanbanBoardProps {
   tasks: Task[];
+  currentUser?: UserType | null;
   onUpdateStatus: (id: number, status: TaskStatus) => Promise<void>;
   onEdit: (task: Task) => void;
   onDeleteRequest: (task: Task) => void;
@@ -15,6 +16,7 @@ interface KanbanBoardProps {
 
 export function KanbanBoard({
   tasks,
+  currentUser,
   onUpdateStatus,
   onEdit,
   onDeleteRequest,
@@ -55,6 +57,9 @@ export function KanbanBoard({
     },
   ];
 
+  const isAdmin = currentUser?.role === "admin";
+  const isManager = currentUser?.role === "manager";
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
       {columns.map((col) => {
@@ -64,7 +69,7 @@ export function KanbanBoard({
         return (
           <div
             key={col.id}
-            className="flex flex-col rounded-2xl bg-slate-900/30 border border-slate-800/80 p-3.5 min-h-[500px]"
+            className="flex flex-col rounded-2xl bg-[#0d121f]/60 border border-slate-800/80 p-3.5 min-h-[500px]"
           >
             {/* Column Header */}
             <div className={`flex items-center justify-between p-3 rounded-xl border ${col.bgHeader} mb-3.5`}>
@@ -81,6 +86,10 @@ export function KanbanBoard({
             <div className="flex-1 space-y-3 overflow-y-auto max-h-[70vh] pr-1">
               {colTasks.map((t) => {
                 const isBusy = isBusyId === t.id;
+                const isOwner = currentUser?.id === t.owner_id;
+                const canEdit = isOwner || isAdmin || isManager;
+                const canDelete = isOwner || isAdmin;
+
                 let dueText: string | null = null;
                 let isOverdue = false;
                 if (t.due_date) {
@@ -92,7 +101,7 @@ export function KanbanBoard({
                 return (
                   <div
                     key={t.id}
-                    className={`group relative rounded-xl border p-3.5 bg-slate-950/70 border-slate-800/90 hover:border-slate-700 transition-all shadow-sm ${
+                    className={`group relative rounded-xl border p-3.5 bg-[#090d16]/90 border-slate-800/90 hover:border-slate-700/90 transition-all shadow-sm ${
                       isBusy ? "opacity-50" : ""
                     }`}
                   >
@@ -100,28 +109,42 @@ export function KanbanBoard({
                       <h4 className="font-medium text-sm text-slate-100 leading-snug break-words flex-1">
                         {t.title}
                       </h4>
-                      <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => onEdit(t)}
-                          title="Edit"
-                          className="p-1 text-slate-400 hover:text-indigo-300 rounded hover:bg-slate-800 cursor-pointer"
-                        >
-                          <Edit3 className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => onDeleteRequest(t)}
-                          title="Delete"
-                          className="p-1 text-slate-400 hover:text-rose-400 rounded hover:bg-slate-800 cursor-pointer"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
+                      {(canEdit || canDelete) && (
+                        <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                          {canEdit && (
+                            <button
+                              onClick={() => onEdit(t)}
+                              title="Edit"
+                              className="p-1 text-slate-400 hover:text-indigo-300 rounded hover:bg-slate-800 cursor-pointer"
+                            >
+                              <Edit3 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button
+                              onClick={() => onDeleteRequest(t)}
+                              title="Delete"
+                              className="p-1 text-slate-400 hover:text-rose-400 rounded hover:bg-slate-800 cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     {t.description && (
                       <p className="mt-1 text-xs text-slate-400 line-clamp-2 break-words">
                         {t.description}
                       </p>
+                    )}
+
+                    {/* Owner tag if available */}
+                    {t.owner_email && (
+                      <div className="mt-2 flex items-center gap-1 text-[11px] text-indigo-300/80">
+                        <User className="w-3 h-3" />
+                        <span className="truncate max-w-[180px]">{t.owner_email}</span>
+                      </div>
                     )}
 
                     <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-900 text-xs text-slate-400">
@@ -140,32 +163,34 @@ export function KanbanBoard({
                       )}
 
                       {/* Directional Shift Buttons */}
-                      <div className="flex items-center gap-1">
-                        {col.id !== "todo" && (
-                          <button
-                            disabled={isBusy}
-                            onClick={() =>
-                              onUpdateStatus(t.id, col.id === "done" ? "in_progress" : "todo")
-                            }
-                            title="Move left"
-                            className="p-1 hover:text-white rounded hover:bg-slate-800 cursor-pointer"
-                          >
-                            <ArrowLeft className="w-3 h-3" />
-                          </button>
-                        )}
-                        {col.id !== "done" && (
-                          <button
-                            disabled={isBusy}
-                            onClick={() =>
-                              onUpdateStatus(t.id, col.id === "todo" ? "in_progress" : "done")
-                            }
-                            title="Move right"
-                            className="p-1 hover:text-white rounded hover:bg-slate-800 cursor-pointer"
-                          >
-                            <ArrowRight className="w-3 h-3" />
-                          </button>
-                        )}
-                      </div>
+                      {canEdit && (
+                        <div className="flex items-center gap-1">
+                          {col.id !== "todo" && (
+                            <button
+                              disabled={isBusy}
+                              onClick={() =>
+                                onUpdateStatus(t.id, col.id === "done" ? "in_progress" : "todo")
+                              }
+                              title="Move left"
+                              className="p-1 hover:text-white rounded hover:bg-slate-800 cursor-pointer"
+                            >
+                              <ArrowLeft className="w-3 h-3" />
+                            </button>
+                          )}
+                          {col.id !== "done" && (
+                            <button
+                              disabled={isBusy}
+                              onClick={() =>
+                                onUpdateStatus(t.id, col.id === "todo" ? "in_progress" : "done")
+                              }
+                              title="Move right"
+                              className="p-1 hover:text-white rounded hover:bg-slate-800 cursor-pointer"
+                            >
+                              <ArrowRight className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );

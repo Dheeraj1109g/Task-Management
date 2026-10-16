@@ -6,12 +6,14 @@ class TaskCreate(BaseModel):
     title: str = Field(min_length=1, max_length=200)
     description: str | None = None
     due_date: datetime | None = None
+    owner_id: int | None = None
 
 class TaskUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=200)
     description: str | None = None
     status: TaskStatus | None = None
     due_date: datetime | None = None
+    owner_id: int | None = None
 
 class TaskRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -20,6 +22,8 @@ class TaskRead(BaseModel):
     description: str | None
     status: TaskStatus
     due_date: datetime | None
+    owner_id: int | None = None
+    owner_email: str | None = None
     created_at: datetime
 
 class TaskStats(BaseModel):

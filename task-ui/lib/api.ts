@@ -16,6 +16,8 @@ export const getApiBaseUrl = (): string => {
 
 export const API_URL = getApiBaseUrl();
 
+export type UserRole = "admin" | "manager" | "member";
+
 export type TaskStatus = "todo" | "in_progress" | "done";
 
 export type Task = {
@@ -24,13 +26,35 @@ export type Task = {
   description: string | null;
   status: TaskStatus;
   due_date: string | null;
+  owner_id?: number | null;
+  owner_email?: string | null;
   created_at: string;
 };
 
 export type User = {
   id: number;
   email: string;
-  created_at: string;
+  role: UserRole;
+  is_verified: boolean;
+  created_at?: string;
+};
+
+export type UserRegisterResponse = {
+  id: number;
+  email: string;
+  role: UserRole;
+  is_verified: boolean;
+  verification_token?: string;
+  message: string;
+};
+
+export type AdminUserView = {
+  id: number;
+  email: string;
+  role: UserRole;
+  is_verified: boolean;
+  created_at: string | null;
+  task_count: number;
 };
 
 export type TaskStats = {
@@ -103,11 +127,11 @@ async function request<T>(path: string, options: RequestInit = {}, retries: numb
 
 const jsonHeaders = { "Content-Type": "application/json" };
 
-export async function register(email: string, password: string): Promise<User> {
-  return request<User>("/auth/register", {
+export async function register(email: string, password: string, role?: UserRole): Promise<UserRegisterResponse> {
+  return request<UserRegisterResponse>("/auth/register", {
     method: "POST",
     headers: jsonHeaders,
-    body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+    body: JSON.stringify({ email: email.trim().toLowerCase(), password, role }),
   });
 }
 
@@ -121,17 +145,47 @@ export async function login(email: string, password: string): Promise<string> {
   return data.access_token;
 }
 
+export async function demoLogin(targetRole: UserRole): Promise<{ access_token: string; role: UserRole; user: User }> {
+  const data = await request<{ access_token: string; role: UserRole; user: User }>(
+    `/auth/demo-login/${targetRole}`,
+    {
+      method: "POST",
+    }
+  );
+  setToken(data.access_token);
+  return data;
+}
+
+export async function verifyEmail(token: string): Promise<User> {
+  return request<User>("/auth/verify-email", {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify({ token: token.trim() }),
+  });
+}
+
+export async function resendVerification(email: string): Promise<{ message: string; verification_token?: string }> {
+  return request<{ message: string; verification_token?: string }>(
+    `/auth/resend-verification?email=${encodeURIComponent(email.trim().toLowerCase())}`,
+    {
+      method: "POST",
+    }
+  );
+}
+
 export async function getMe(): Promise<User> {
   return request<User>("/auth/me");
 }
 
 export async function listTasks(
   status?: TaskStatus,
+  allUsers: boolean = false,
   limit: number = 100,
   offset: number = 0
 ): Promise<Task[]> {
   const params = new URLSearchParams();
   if (status) params.append("status", status);
+  if (allUsers) params.append("all", "true");
   if (limit) params.append("limit", limit.toString());
   if (offset) params.append("offset", offset.toString());
 
@@ -146,7 +200,8 @@ export async function getTask(id: number): Promise<Task> {
 export async function createTask(
   title: string,
   description?: string | null,
-  dueDate?: string | null
+  dueDate?: string | null,
+  ownerId?: number | null
 ): Promise<Task> {
   return request<Task>("/tasks", {
     method: "POST",
@@ -155,6 +210,7 @@ export async function createTask(
       title: title.trim(),
       description: description?.trim() ? description.trim() : null,
       due_date: dueDate ? new Date(dueDate).toISOString() : null,
+      owner_id: ownerId ?? undefined,
     }),
   });
 }
@@ -166,6 +222,7 @@ export async function updateTask(
     description?: string | null;
     status?: TaskStatus;
     due_date?: string | null;
+    owner_id?: number | null;
   }
 ): Promise<Task> {
   const payload: Record<string, unknown> = {};
@@ -177,6 +234,7 @@ export async function updateTask(
   if (data.due_date !== undefined) {
     payload.due_date = data.due_date ? new Date(data.due_date).toISOString() : null;
   }
+  if (data.owner_id !== undefined) payload.owner_id = data.owner_id;
 
   return request<Task>(`/tasks/${id}`, {
     method: "PATCH",
@@ -189,8 +247,33 @@ export async function deleteTask(id: number): Promise<void> {
   return request<void>(`/tasks/${id}`, { method: "DELETE" });
 }
 
-export async function getStats(): Promise<TaskStats> {
-  return request<TaskStats>("/tasks/stats");
+export async function getStats(scope: "mine" | "all" = "mine"): Promise<TaskStats> {
+  return request<TaskStats>(`/tasks/stats?scope=${scope}`);
+}
+
+// Admin API
+export async function listAdminUsers(): Promise<AdminUserView[]> {
+  return request<AdminUserView[]>("/admin/users");
+}
+
+export async function updateUserRole(userId: number, role: UserRole): Promise<AdminUserView> {
+  return request<AdminUserView>(`/admin/users/${userId}/role`, {
+    method: "PATCH",
+    headers: jsonHeaders,
+    body: JSON.stringify({ role }),
+  });
+}
+
+export async function verifyUserManually(userId: number): Promise<AdminUserView> {
+  return request<AdminUserView>(`/admin/users/${userId}/verify`, {
+    method: "POST",
+  });
+}
+
+export async function deleteUser(userId: number): Promise<void> {
+  return request<void>(`/admin/users/${userId}`, {
+    method: "DELETE",
+  });
 }
 
 export interface HealthStatus {

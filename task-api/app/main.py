@@ -2,7 +2,7 @@ import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from app.logging import setup_logging
-from app.api.routes import auth,tasks
+from app.api.routes import auth, tasks, admin
 import time
 from fastapi import HTTPException
 from sqlalchemy import text
@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="Task Management API", version="1.0.0")
 app.include_router(auth.router)
 app.include_router(tasks.router)
+app.include_router(admin.router)
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception):
