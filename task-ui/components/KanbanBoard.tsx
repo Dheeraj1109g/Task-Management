@@ -35,25 +35,25 @@ export function KanbanBoard({
       id: "todo",
       title: "To Do",
       icon: Clock,
-      color: "text-sky-400",
-      bgHeader: "bg-sky-500/10 border-sky-500/20",
-      badgeColor: "bg-sky-500/20 text-sky-300",
+      color: "text-sky-600",
+      bgHeader: "bg-sky-50 border-sky-200 text-sky-900",
+      badgeColor: "bg-sky-100 text-sky-800",
     },
     {
       id: "in_progress",
       title: "In Progress",
       icon: TrendingUp,
-      color: "text-amber-400",
-      bgHeader: "bg-amber-500/10 border-amber-500/20",
-      badgeColor: "bg-amber-500/20 text-amber-300",
+      color: "text-amber-600",
+      bgHeader: "bg-amber-50 border-amber-200 text-amber-900",
+      badgeColor: "bg-amber-100 text-amber-800",
     },
     {
       id: "done",
       title: "Completed",
       icon: CheckCircle2,
-      color: "text-emerald-400",
-      bgHeader: "bg-emerald-500/10 border-emerald-500/20",
-      badgeColor: "bg-emerald-500/20 text-emerald-300",
+      color: "text-slate-950",
+      bgHeader: "bg-[#d2f801]/30 border-[#bfe700] text-slate-950",
+      badgeColor: "bg-[#d2f801] text-black font-extrabold",
     },
   ];
 
@@ -69,13 +69,13 @@ export function KanbanBoard({
         return (
           <div
             key={col.id}
-            className="flex flex-col rounded-2xl bg-[#0d121f]/60 border border-slate-800/80 p-3.5 min-h-[500px]"
+            className="flex flex-col rounded-2xl bg-slate-100/70 border border-slate-200/90 p-3.5 min-h-[500px]"
           >
             {/* Column Header */}
-            <div className={`flex items-center justify-between p-3 rounded-xl border ${col.bgHeader} mb-3.5`}>
+            <div className={`flex items-center justify-between p-3 rounded-xl border ${col.bgHeader} mb-3.5 shadow-xs`}>
               <div className="flex items-center gap-2">
                 <Icon className={`w-4 h-4 ${col.color}`} />
-                <h3 className="font-semibold text-sm text-slate-200">{col.title}</h3>
+                <h3 className="font-bold text-sm">{col.title}</h3>
               </div>
               <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${col.badgeColor}`}>
                 {colTasks.length}
@@ -101,12 +101,12 @@ export function KanbanBoard({
                 return (
                   <div
                     key={t.id}
-                    className={`group relative rounded-xl border p-3.5 bg-[#090d16]/90 border-slate-800/90 hover:border-slate-700/90 transition-all shadow-sm ${
+                    className={`group relative rounded-xl border p-3.5 bg-white border-slate-200/90 hover:border-slate-300 hover:shadow-md transition-all shadow-xs ${
                       isBusy ? "opacity-50" : ""
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <h4 className="font-medium text-sm text-slate-100 leading-snug break-words flex-1">
+                      <h4 className="font-semibold text-sm text-slate-900 leading-snug break-words flex-1">
                         {t.title}
                       </h4>
                       {(canEdit || canDelete) && (
@@ -115,7 +115,7 @@ export function KanbanBoard({
                             <button
                               onClick={() => onEdit(t)}
                               title="Edit"
-                              className="p-1 text-slate-400 hover:text-indigo-300 rounded hover:bg-slate-800 cursor-pointer"
+                              className="p-1 text-slate-400 hover:text-slate-900 rounded-md hover:bg-slate-100 cursor-pointer"
                             >
                               <Edit3 className="w-3.5 h-3.5" />
                             </button>
@@ -124,7 +124,7 @@ export function KanbanBoard({
                             <button
                               onClick={() => onDeleteRequest(t)}
                               title="Delete"
-                              className="p-1 text-slate-400 hover:text-rose-400 rounded hover:bg-slate-800 cursor-pointer"
+                              className="p-1 text-slate-400 hover:text-rose-600 rounded-md hover:bg-rose-50 cursor-pointer"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
                             </button>
@@ -134,32 +134,32 @@ export function KanbanBoard({
                     </div>
 
                     {t.description && (
-                      <p className="mt-1 text-xs text-slate-400 line-clamp-2 break-words">
+                      <p className="mt-1 text-xs text-slate-600 line-clamp-2 break-words">
                         {t.description}
                       </p>
                     )}
 
                     {/* Owner tag if available */}
                     {t.owner_email && (
-                      <div className="mt-2 flex items-center gap-1 text-[11px] text-indigo-300/80">
-                        <User className="w-3 h-3" />
+                      <div className="mt-2 flex items-center gap-1 text-[11px] text-slate-500 font-medium">
+                        <User className="w-3 h-3 text-slate-400" />
                         <span className="truncate max-w-[180px]">{t.owner_email}</span>
                       </div>
                     )}
 
-                    <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-900 text-xs text-slate-400">
+                    <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500">
                       {dueText ? (
                         <span
-                          className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
+                          className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
                             isOverdue
-                              ? "bg-rose-500/10 text-rose-300 border border-rose-500/30"
-                              : "bg-slate-800/90 text-slate-300"
+                              ? "bg-rose-50 text-rose-700 border border-rose-200"
+                              : "bg-slate-100 text-slate-700 border border-slate-200"
                           }`}
                         >
                           {isOverdue ? `Overdue (${dueText})` : `Due ${dueText}`}
                         </span>
                       ) : (
-                        <span className="text-[11px] text-slate-600">No due date</span>
+                        <span className="text-[11px] text-slate-400">No due date</span>
                       )}
 
                       {/* Directional Shift Buttons */}
@@ -172,7 +172,7 @@ export function KanbanBoard({
                                 onUpdateStatus(t.id, col.id === "done" ? "in_progress" : "todo")
                               }
                               title="Move left"
-                              className="p-1 hover:text-white rounded hover:bg-slate-800 cursor-pointer"
+                              className="p-1 text-slate-500 hover:text-black rounded-md hover:bg-slate-100 cursor-pointer"
                             >
                               <ArrowLeft className="w-3 h-3" />
                             </button>
@@ -184,7 +184,7 @@ export function KanbanBoard({
                                 onUpdateStatus(t.id, col.id === "todo" ? "in_progress" : "done")
                               }
                               title="Move right"
-                              className="p-1 hover:text-white rounded hover:bg-slate-800 cursor-pointer"
+                              className="p-1 text-slate-500 hover:text-black rounded-md hover:bg-slate-100 cursor-pointer"
                             >
                               <ArrowRight className="w-3 h-3" />
                             </button>
@@ -197,8 +197,8 @@ export function KanbanBoard({
               })}
 
               {colTasks.length === 0 && (
-                <div className="py-8 text-center border-2 border-dashed border-slate-800/60 rounded-xl">
-                  <p className="text-xs text-slate-500">No tasks in this lane</p>
+                <div className="py-8 text-center border-2 border-dashed border-slate-200 rounded-xl bg-white/50">
+                  <p className="text-xs text-slate-400 font-medium">No tasks in this lane</p>
                 </div>
               )}
             </div>
@@ -206,7 +206,7 @@ export function KanbanBoard({
             {/* Quick add button in column */}
             <button
               onClick={() => onQuickAdd(col.id)}
-              className="mt-3 flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 border border-dashed border-slate-800 hover:border-slate-700 transition-all cursor-pointer"
+              className="mt-3 flex items-center justify-center gap-1.5 w-full py-2 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-950 hover:bg-white bg-white/60 border border-dashed border-slate-300 hover:border-slate-400 transition-all cursor-pointer shadow-2xs"
             >
               <Plus className="w-3.5 h-3.5" />
               Add task

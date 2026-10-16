@@ -19,7 +19,7 @@ import { useToast } from "@/components/Toast";
 
 interface NavbarProps {
   user: UserType | null;
-  apiHealthy: boolean | null;
+  apiHealthy?: boolean | null;
   onLogout: () => void;
   onOpenCreateModal: () => void;
   onOpenAdminModal?: () => void;
@@ -28,7 +28,6 @@ interface NavbarProps {
 
 export function Navbar({
   user,
-  apiHealthy,
   onLogout,
   onOpenCreateModal,
   onOpenAdminModal,
@@ -66,19 +65,19 @@ export function Navbar({
         return {
           icon: Crown,
           text: "Admin",
-          color: "text-violet-300 bg-violet-500/15 border-violet-500/30 shadow-violet-500/10",
+          color: "text-slate-950 bg-[#d2f801]/30 border-[#bfe700]",
         };
       case "manager":
         return {
           icon: Briefcase,
           text: "Manager",
-          color: "text-amber-300 bg-amber-500/15 border-amber-500/30 shadow-amber-500/10",
+          color: "text-amber-900 bg-amber-100 border-amber-300",
         };
       default:
         return {
           icon: UserIcon,
           text: "Member",
-          color: "text-sky-300 bg-sky-500/15 border-sky-500/30 shadow-sky-500/10",
+          color: "text-sky-900 bg-sky-100 border-sky-300",
         };
     }
   };
@@ -87,8 +86,8 @@ export function Navbar({
   const BadgeIcon = badge.icon;
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-800/80 bg-[#080b11]/85 backdrop-blur-xl transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl transition-all">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
         {/* Brand / Logo */}
         <div className="flex items-center gap-3">
           <Link
@@ -96,31 +95,31 @@ export function Navbar({
             className="flex items-center gap-3 group transition-transform active:scale-95"
             title="Return to Landing Page"
           >
-            <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 ring-1 ring-white/20 group-hover:shadow-indigo-500/40 transition-all">
-              <Layers className="w-5 h-5 text-white" />
+            <div className="h-10 w-10 rounded-2xl bg-[#d2f801] flex items-center justify-center shadow-md shadow-[#d2f801]/30 ring-1 ring-black/10 group-hover:scale-105 transition-all text-black font-black">
+              <Layers className="w-5 h-5 text-black" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
+                <span className="font-extrabold text-xl tracking-tight text-slate-950">
                   PulseFlow
                 </span>
-                <span className="text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  FINTECH v2.4
+                <span className="text-[10px] font-black tracking-wider uppercase px-2 py-0.5 rounded-full bg-[#d2f801]/30 text-slate-950 border border-[#bfe700]">
+                  FINTECH OS
                 </span>
               </div>
-              <p className="hidden md:block text-[11px] text-slate-400 font-medium">B2B Workflow &amp; RBAC Cloud</p>
+              <p className="hidden md:block text-[10px] text-slate-500 font-medium">B2B Workflow &amp; RBAC Cloud</p>
             </div>
           </Link>
         </div>
 
-        {/* Center / Status & Role indicator */}
+        {/* Center / Role indicator */}
         <div className="hidden lg:flex items-center gap-3">
           {/* Active Role Pill with Quick Switcher */}
           <div className="relative">
             <button
               onClick={() => setRoleMenuOpen(!roleMenuOpen)}
               disabled={switchingRole}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border shadow-sm transition-all cursor-pointer ${badge.color}`}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold border shadow-sm transition-all cursor-pointer ${badge.color}`}
             >
               <BadgeIcon className="w-3.5 h-3.5" />
               <span>Role: {badge.text}</span>
@@ -130,68 +129,49 @@ export function Navbar({
             {roleMenuOpen && (
               <>
                 <div className="fixed inset-0 z-20" onClick={() => setRoleMenuOpen(false)} />
-                <div className="absolute left-0 mt-2 z-30 w-52 rounded-2xl border border-slate-800 bg-[#0d121f] p-1.5 shadow-2xl animate-in fade-in zoom-in-95">
-                  <div className="px-2.5 py-1.5 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800/80 mb-1">
+                <div className="absolute left-0 mt-2 z-30 w-52 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-2xl animate-in fade-in zoom-in-95">
+                  <div className="px-2.5 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 mb-1">
                     Simulate Role (Demo)
                   </div>
                   <button
                     onClick={() => handleQuickSwitch("admin")}
-                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium cursor-pointer transition-colors ${
-                      role === "admin" ? "bg-violet-500/20 text-violet-200" : "text-slate-300 hover:bg-slate-800/80"
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                      role === "admin" ? "bg-[#d2f801]/30 text-slate-950 font-bold" : "text-slate-700 hover:bg-slate-50"
                     }`}
                   >
                     <span className="flex items-center gap-2">
-                      <Crown className="w-3.5 h-3.5 text-violet-400" />
+                      <Crown className="w-3.5 h-3.5 text-slate-900" />
                       Admin
                     </span>
-                    {role === "admin" && <span className="text-[10px] text-violet-400 font-bold">Active</span>}
+                    {role === "admin" && <span className="text-[10px] text-slate-900 font-bold">Active</span>}
                   </button>
                   <button
                     onClick={() => handleQuickSwitch("manager")}
-                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium cursor-pointer transition-colors ${
-                      role === "manager" ? "bg-amber-500/20 text-amber-200" : "text-slate-300 hover:bg-slate-800/80"
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                      role === "manager" ? "bg-amber-100 text-amber-900 font-bold" : "text-slate-700 hover:bg-slate-50"
                     }`}
                   >
                     <span className="flex items-center gap-2">
-                      <Briefcase className="w-3.5 h-3.5 text-amber-400" />
+                      <Briefcase className="w-3.5 h-3.5 text-amber-600" />
                       Manager
                     </span>
-                    {role === "manager" && <span className="text-[10px] text-amber-400 font-bold">Active</span>}
+                    {role === "manager" && <span className="text-[10px] text-amber-600 font-bold">Active</span>}
                   </button>
                   <button
                     onClick={() => handleQuickSwitch("member")}
-                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-medium cursor-pointer transition-colors ${
-                      role === "member" ? "bg-sky-500/20 text-sky-200" : "text-slate-300 hover:bg-slate-800/80"
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
+                      role === "member" ? "bg-sky-100 text-sky-900 font-bold" : "text-slate-700 hover:bg-slate-50"
                     }`}
                   >
                     <span className="flex items-center gap-2">
-                      <UserIcon className="w-3.5 h-3.5 text-sky-400" />
+                      <UserIcon className="w-3.5 h-3.5 text-sky-600" />
                       Member
                     </span>
-                    {role === "member" && <span className="text-[10px] text-sky-400 font-bold">Active</span>}
+                    {role === "member" && <span className="text-[10px] text-sky-600 font-bold">Active</span>}
                   </button>
                 </div>
               </>
             )}
-          </div>
-
-          {/* API Health */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/60 border border-slate-800 text-xs">
-            <span className="relative flex h-2 w-2">
-              {apiHealthy ? (
-                <>
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </>
-              ) : apiHealthy === null ? (
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400 animate-pulse"></span>
-              ) : (
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-              )}
-            </span>
-            <span className="text-slate-300">
-              {apiHealthy === null ? "Telemetry sync..." : apiHealthy ? "Telemetry 99.99%" : "Backend Offline"}
-            </span>
           </div>
         </div>
 
@@ -201,10 +181,10 @@ export function Navbar({
           {role === "admin" && onOpenAdminModal && (
             <button
               onClick={onOpenAdminModal}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border border-violet-500/30 transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-800 border border-slate-200 transition-all cursor-pointer"
               title="Manage Team Roles and Access Control"
             >
-              <Users className="w-3.5 h-3.5" />
+              <Users className="w-3.5 h-3.5 text-slate-900" />
               <span className="hidden sm:inline">Admin RBAC</span>
             </button>
           )}
@@ -212,19 +192,19 @@ export function Navbar({
           {/* Create Task Button */}
           <button
             onClick={onOpenCreateModal}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/25 active:scale-95 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-4 sm:px-5 py-2 text-xs sm:text-sm font-extrabold rounded-full bg-[#d2f801] hover:bg-[#bce000] text-black shadow-md shadow-[#d2f801]/30 active:scale-95 transition-all cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 stroke-[3]" />
             <span className="hidden sm:inline">New Task</span>
           </button>
 
           {/* User Profile & Logout */}
-          <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800/80 text-xs text-slate-200">
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-white text-xs ring-1 ring-white/10">
+          <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
+            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs text-slate-800">
+              <div className="w-6 h-6 rounded-full bg-[#d2f801] flex items-center justify-center font-black text-black text-xs ring-1 ring-black/10">
                 {userInitial}
               </div>
-              <span className="hidden sm:inline max-w-[130px] truncate font-medium text-slate-300">
+              <span className="hidden sm:inline max-w-[130px] truncate font-semibold text-slate-800">
                 {user?.email ?? "User"}
               </span>
             </div>
@@ -232,7 +212,7 @@ export function Navbar({
             <button
               onClick={onLogout}
               title="Sign Out"
-              className="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all border border-transparent hover:border-rose-500/20 cursor-pointer"
+              className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-all border border-transparent hover:border-rose-200 cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
             </button>

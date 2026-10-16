@@ -23,40 +23,40 @@ export function StatsOverview({ stats, activeFilter, onSelectFilter }: StatsOver
       count: total,
       value: "" as const,
       icon: ListTodo,
-      textColor: "text-slate-100",
-      accentBg: "bg-slate-800/60",
-      iconColor: "text-indigo-400",
-      borderColor: activeFilter === "" ? "border-indigo-500/80 ring-2 ring-indigo-500/20" : "border-slate-800/80",
+      textColor: "text-slate-950",
+      accentBg: "bg-[#d2f801]/30",
+      iconColor: "text-slate-950",
+      borderColor: activeFilter === "" ? "border-slate-900 ring-2 ring-slate-900/10 shadow-md" : "border-slate-200/90",
     },
     {
       label: "To Do",
       count: todo,
       value: "todo" as const,
       icon: Clock,
-      textColor: "text-sky-300",
-      accentBg: "bg-sky-500/10",
-      iconColor: "text-sky-400",
-      borderColor: activeFilter === "todo" ? "border-sky-500/80 ring-2 ring-sky-500/20" : "border-slate-800/80",
+      textColor: "text-sky-700",
+      accentBg: "bg-sky-100",
+      iconColor: "text-sky-600",
+      borderColor: activeFilter === "todo" ? "border-sky-500 ring-2 ring-sky-500/20 shadow-md" : "border-slate-200/90",
     },
     {
       label: "In Progress",
       count: inProgress,
       value: "in_progress" as const,
       icon: TrendingUp,
-      textColor: "text-amber-300",
-      accentBg: "bg-amber-500/10",
-      iconColor: "text-amber-400",
-      borderColor: activeFilter === "in_progress" ? "border-amber-500/80 ring-2 ring-amber-500/20" : "border-slate-800/80",
+      textColor: "text-amber-700",
+      accentBg: "bg-amber-100",
+      iconColor: "text-amber-600",
+      borderColor: activeFilter === "in_progress" ? "border-amber-500 ring-2 ring-amber-500/20 shadow-md" : "border-slate-200/90",
     },
     {
       label: "Completed",
       count: done,
       value: "done" as const,
       icon: CheckCircle2,
-      textColor: "text-emerald-300",
-      accentBg: "bg-emerald-500/10",
-      iconColor: "text-emerald-400",
-      borderColor: activeFilter === "done" ? "border-emerald-500/80 ring-2 ring-emerald-500/20" : "border-slate-800/80",
+      textColor: "text-slate-950",
+      accentBg: "bg-[#d2f801]/30",
+      iconColor: "text-slate-950",
+      borderColor: activeFilter === "done" ? "border-[#bfe700] ring-2 ring-[#d2f801]/40 shadow-md" : "border-slate-200/90",
     },
   ];
 
@@ -71,10 +71,10 @@ export function StatsOverview({ stats, activeFilter, onSelectFilter }: StatsOver
             <button
               key={item.label}
               onClick={() => onSelectFilter(item.value)}
-              className={`relative overflow-hidden text-left p-4 rounded-2xl bg-slate-900/40 hover:bg-slate-900/80 border transition-all duration-200 cursor-pointer ${item.borderColor}`}
+              className={`relative overflow-hidden text-left p-4 sm:p-5 rounded-2xl bg-white hover:bg-slate-50/80 border transition-all duration-200 shadow-sm cursor-pointer ${item.borderColor}`}
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                   {item.label}
                 </span>
                 <div className={`p-2 rounded-xl ${item.accentBg} ${item.iconColor}`}>
@@ -82,19 +82,19 @@ export function StatsOverview({ stats, activeFilter, onSelectFilter }: StatsOver
                 </div>
               </div>
 
-              <div className="mt-2 flex items-baseline gap-2">
-                <span className={`text-2xl sm:text-3xl font-bold tracking-tight ${item.textColor}`}>
+              <div className="mt-3 flex items-baseline gap-2">
+                <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${item.textColor}`}>
                   {item.count}
                 </span>
                 {item.value === "done" && total > 0 && (
-                  <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-black text-black bg-[#d2f801] px-2 py-0.5 rounded-full shadow-xs">
                     {completionRate}%
                   </span>
                 )}
               </div>
 
               {isActive && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-violet-500" />
+                <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#d2f801]" />
               )}
             </button>
           );
@@ -103,19 +103,19 @@ export function StatsOverview({ stats, activeFilter, onSelectFilter }: StatsOver
 
       {/* Progress Bar */}
       {total > 0 && (
-        <div className="p-3.5 rounded-2xl bg-slate-900/30 border border-slate-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
-            <span className="text-slate-400">Overall Progress:</span>
-            <span className="font-semibold text-slate-200">{done} of {total} tasks completed</span>
+            <span className="text-slate-500 font-medium">Sprint Completion Velocity:</span>
+            <span className="font-bold text-slate-900">{done} of {total} tasks completed ({completionRate}%)</span>
           </div>
-          <div className="w-full sm:w-64 h-2 rounded-full bg-slate-800 overflow-hidden flex">
+          <div className="w-full sm:w-64 h-2.5 rounded-full bg-slate-100 overflow-hidden flex ring-1 ring-slate-200/60">
             <div
-              className="bg-emerald-500 transition-all duration-500"
+              className="bg-[#d2f801] transition-all duration-500"
               style={{ width: `${completionRate}%` }}
               title={`Done: ${done}`}
             />
             <div
-              className="bg-amber-500 transition-all duration-500"
+              className="bg-amber-400 transition-all duration-500"
               style={{ width: `${total > 0 ? (inProgress / total) * 100 : 0}%` }}
               title={`In Progress: ${inProgress}`}
             />

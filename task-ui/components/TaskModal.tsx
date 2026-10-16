@@ -95,10 +95,10 @@ function TaskModalForm({
       {/* Title input */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between text-xs">
-          <label htmlFor="task-title" className="font-medium text-slate-300">
-            Title <span className="text-rose-400">*</span>
+          <label htmlFor="task-title" className="font-semibold text-slate-800">
+            Title <span className="text-rose-500">*</span>
           </label>
-          <span className="text-slate-500">{title.length}/200</span>
+          <span className="text-slate-400">{title.length}/200</span>
         </div>
         <input
           id="task-title"
@@ -108,14 +108,14 @@ function TaskModalForm({
           placeholder="e.g. Implement user authentication test suite"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+          className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:bg-white transition-all"
           autoFocus
         />
       </div>
 
       {/* Description input */}
       <div className="space-y-1.5">
-        <label htmlFor="task-desc" className="block text-xs font-medium text-slate-300">
+        <label htmlFor="task-desc" className="block text-xs font-semibold text-slate-800">
           Description (optional)
         </label>
         <textarea
@@ -124,7 +124,7 @@ function TaskModalForm({
           placeholder="Add details, notes, links, or acceptance criteria..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all resize-y"
+          className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:bg-white transition-all resize-y"
         />
       </div>
 
@@ -132,14 +132,14 @@ function TaskModalForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Status */}
         <div className="space-y-1.5">
-          <label htmlFor="task-status" className="block text-xs font-medium text-slate-300">
+          <label htmlFor="task-status" className="block text-xs font-semibold text-slate-800">
             Status
           </label>
           <select
             id="task-status"
             value={status}
             onChange={(e) => setStatus(e.target.value as TaskStatus)}
-            className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 transition-all cursor-pointer"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:border-slate-900 focus:bg-white transition-all cursor-pointer"
           >
             <option value="todo">To Do</option>
             <option value="in_progress">In Progress</option>
@@ -149,7 +149,7 @@ function TaskModalForm({
 
         {/* Due Date */}
         <div className="space-y-1.5">
-          <label htmlFor="task-due" className="block text-xs font-medium text-slate-300">
+          <label htmlFor="task-due" className="block text-xs font-semibold text-slate-800">
             Due Date
           </label>
           <input
@@ -157,7 +157,7 @@ function TaskModalForm({
             type="date"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
-            className="w-full rounded-xl border border-slate-800 bg-slate-900/60 px-3.5 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 transition-all cursor-pointer"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:border-slate-900 focus:bg-white transition-all cursor-pointer"
           />
         </div>
       </div>
@@ -170,21 +170,21 @@ function TaskModalForm({
         <button
           type="button"
           onClick={() => setPresetDate(0)}
-          className="px-2 py-0.5 text-[11px] font-medium rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition-colors cursor-pointer"
+          className="px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 transition-colors cursor-pointer"
         >
           Today
         </button>
         <button
           type="button"
           onClick={() => setPresetDate(1)}
-          className="px-2 py-0.5 text-[11px] font-medium rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition-colors cursor-pointer"
+          className="px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 transition-colors cursor-pointer"
         >
           Tomorrow
         </button>
         <button
           type="button"
           onClick={() => setPresetDate(7)}
-          className="px-2 py-0.5 text-[11px] font-medium rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition-colors cursor-pointer"
+          className="px-2.5 py-0.5 text-[11px] font-semibold rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 transition-colors cursor-pointer"
         >
           Next Week
         </button>
@@ -192,7 +192,7 @@ function TaskModalForm({
           <button
             type="button"
             onClick={() => setDueDate("")}
-            className="px-2 py-0.5 text-[11px] font-medium text-rose-400 hover:text-rose-300 transition-colors cursor-pointer"
+            className="px-2.5 py-0.5 text-[11px] font-semibold text-rose-600 hover:text-rose-700 transition-colors cursor-pointer"
           >
             Clear date
           </button>
@@ -200,23 +200,23 @@ function TaskModalForm({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800/80">
+      <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
         <button
           type="button"
           onClick={onClose}
           disabled={loading}
-          className="px-4 py-2 text-sm font-medium rounded-xl border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-900 transition-colors cursor-pointer"
+          className="px-4 py-2 text-sm font-semibold rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="flex items-center gap-2 px-5 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white shadow-lg shadow-indigo-500/25 active:scale-95 disabled:opacity-50 transition-all cursor-pointer"
+          className="flex items-center gap-2 px-5 py-2 text-sm font-extrabold rounded-full bg-[#d2f801] hover:bg-[#bce000] text-black shadow-md shadow-[#d2f801]/30 active:scale-95 disabled:opacity-50 transition-all cursor-pointer"
         >
           {loading ? (
             <>
-              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
               Saving...
             </>
           ) : isEditing ? (
@@ -245,19 +245,19 @@ export function TaskModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-950 p-6 shadow-2xl z-10 animate-in fade-in zoom-in-95 duration-150">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800/80">
-          <h2 className="text-lg font-bold text-slate-100">
+      <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 sm:p-7 shadow-2xl z-10 animate-in fade-in zoom-in-95 duration-150">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <h2 className="text-lg font-extrabold text-slate-900">
             {isEditing ? "Edit Task" : "Create New Task"}
           </h2>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 transition-colors cursor-pointer"
+            className="p-1.5 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
