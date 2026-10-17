@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/Toast";
 import { ThemeProvider } from "@/components/ThemeContext";
@@ -9,14 +9,9 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "PulseFlow | B2B Fintech & RBAC Cloud Task OS",
-  description: "Next-gen B2B Fintech & Task Infrastructure with granular RBAC governance, token email verification, and velocity metrics.",
+  title: "PulseFlow | Task Infrastructure & RBAC Governance",
+  description: "Task and workflow management with cryptographic email token verification and role-based access control.",
 };
 
 export default function RootLayout({
@@ -28,7 +23,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${geistSans.variable} h-full antialiased dark`}
     >
       <head>
         <script
